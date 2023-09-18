@@ -1,17 +1,35 @@
 from aiogram.filters import Command
-from aiogram import types, Router
+from aiogram import types, Router, F
 from texts import START_TEXT
+from texts import ABOUT_US
 import random
 import os
-
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton as IButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 
 start_router = Router()
 
 
 @start_router.message(Command("start"))
 async def start(message: types.Message):
-    # await message.reply("Привет")
-    await message.answer(START_TEXT)
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                IButton(text="Наш инстаграм", url="https//instagram.com"),
+                IButton(text="Наш aдрес", callback_data="ЦУМ"),
+            ],
+            [
+                IButton(text="О нас", callback_data=ABOUT_US)
+            ]
+        ]
+    )
+    await message.answer(START_TEXT, ABOUT_US, reply_markup=kb)
+
+
+@start_router.callback_query(F.data == "about")
+async def about(callback: types.CallbackQuery):
+    await callback.answer()
+    await callback.message.answer()
 
 
 @start_router.message(Command("photo"))
@@ -24,7 +42,6 @@ async def send_random_picture(message: types.Message):
         await message.answer_photo(file)
     else:
         await message.answer("В папке с картинками нет подходящих файлов.")
-
 
 
 @start_router.message(Command("myinfo"))
