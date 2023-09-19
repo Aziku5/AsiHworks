@@ -6,6 +6,7 @@ import random
 import os
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton as IButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from bot import bot
 
 start_router = Router()
 
@@ -15,21 +16,21 @@ async def start(message: types.Message):
     kb = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                IButton(text="Наш инстаграм", url="https//instagram.com"),
+                IButton(text="Наш инстаграм", url="https://instagram.com"),
                 IButton(text="Наш aдрес", callback_data="ЦУМ"),
             ],
             [
-                IButton(text="О нас", callback_data=ABOUT_US)
+                IButton(text="О нас", callback_data="ABOUT_US")
             ]
         ]
     )
-    await message.answer(START_TEXT, ABOUT_US, reply_markup=kb)
+    await message.answer(START_TEXT, reply_markup=kb)
 
 
-@start_router.callback_query(F.data == "about")
+@start_router.callback_query(F.data == "ABOUT_US")
 async def about(callback: types.CallbackQuery):
-    await callback.answer()
-    await callback.message.answer()
+    await bot.send_message(chat_id=callback.message.chat.id,
+                           text=ABOUT_US)
 
 
 @start_router.message(Command("photo"))

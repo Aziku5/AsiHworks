@@ -19,7 +19,19 @@ async def shop(message: types.Message):
     await message.answer("Выберите категорию ниже:", reply_markup=kb)
 
 
-@shop_router.message(F.text == "Манга")
+@shop_router.message(F.text == "Раскраски")
 async def show_manga(message: types.Message):
     kb = ReplyKeyboardRemove()
-    await message.answer("Список манги в нашем магазине:", reply_markup=kb)
+    await message.answer("Виды раскраски в нашем магазине:", reply_markup=kb)
+
+
+@shop_router.message(F.text == "Комиксы")
+async def show_manga(message: types.Message):
+    kb = ReplyKeyboardRemove()
+    await message.answer("Список комиксов в нашем магазине:", reply_markup=kb)
+
+
+@shop_router.message(F.text == "Книги")
+async def show_manga(message: types.Message):
+    kb = ReplyKeyboardRemove()
+    await message.answer("Список книг в нашем магазине:", reply_markup=kb)
