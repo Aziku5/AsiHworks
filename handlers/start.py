@@ -2,7 +2,6 @@ from aiogram.filters import Command
 from aiogram import types, Router, F
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton as IButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
-from bot import bot
 from texts import START_TEXT
 from texts2 import BUTTON_TEXT
 

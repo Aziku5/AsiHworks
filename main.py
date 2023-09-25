@@ -1,8 +1,11 @@
 import asyncio
 import logging
+from handlers.start import start_router
 from handlers.info import info_router
 from handlers.picture import picture_router
+from handlers.shop import shop_router
 from bot import bot, dp
+from handlers.dialogue_FSM import dialogue_FSM_router
 from db.queries import init_db, create_tables, populate_tables
 from aiogram.types import BotCommand
 
@@ -11,13 +14,6 @@ async def on_startup(dispatcher):
     init_db()
     create_tables()
     populate_tables()
-
-
-from handlers import (
-    start_router,
-    shop_router,
-    dialogue_FSM_router
-)
 
 
 async def main():

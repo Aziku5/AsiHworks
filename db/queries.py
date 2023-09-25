@@ -16,9 +16,25 @@ def create_tables():
     )
     cursor.execute(
         """
+       DROP TABLE IF EXISTS category
+        """
+    )
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS category (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+        )
+        """
+    )
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS product (
             productId INTEGER PRIMARY KEY AUTOINCREMENT,
-            price FLOAT,
+            price FLOATprice FLOAT,
+            categoryId INTEGER,
+            FOREIGN KEY (categoryId) REFERENCES category (id)
+            
         )
         """
     )
@@ -34,14 +50,35 @@ def populate_tables():
                 ('Картина', 26.0)
         """
     )
+    cursor.execute(
+        """
+        INSERT INTO product (name, price, categoryId)
+        VALUES ('А4', 25.0, 1),
+                ('А3', 25, 1),
+                ('KИСТЬ', 19.0, 2),
+                ('KИСТЬ2', 19.0, 2),
+                ('КАРТИНА', 26.0, 3),
+                ('КАРТИНА2', 26.0, 3)
+        """
+    )
     db.commit()
 
 
 def get_product():
-    product = cursor.execute(
-        '''
-        SELECT * FROM product 
-        '''
+    cursor.execute(
+        """
+          SELECT p.name, c.name FROM product p JOIN category c ON p.categoryId = c.id
+          """
+    )
+    return cursor.fetchall()
+
+
+def get_product_by_category(category_id):
+    cursor.execute(
+        """
+        SELECT * FROM product WHERE categoryId = :c_id
+        """,
+        {"c_id": category_id},
     )
     return cursor.fetchall()
 
@@ -50,4 +87,3 @@ if __name__ == "__main__":
     init_db()
     create_tables()
     populate_tables()
-

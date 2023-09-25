@@ -1,9 +1,9 @@
-import db.queries
 from aiogram import types, Router, F
 from aiogram.filters import Command
 from aiogram.types.keyboard_button import KeyboardButton
 from aiogram.types.reply_keyboard_markup import ReplyKeyboardMarkup
-from db.queries import get_product
+from aiogram.types.reply_keyboard_remove import ReplyKeyboardRemove
+from db.queries import get_product_by_category
 
 shop_router = Router()
 
@@ -22,14 +22,26 @@ async def shop(message: types.Message):
 
 @shop_router.message(F.text == "ЛИСТ А4")
 async def show_list(message: types.Message):
-    await message.answer(get_product()[0][1])
+    listy = get_product_by_category(1)
+    kb = ReplyKeyboardRemove()
+    await message.answer("Список листов:", reply_markup=kb)
+    for f in listy:
+        await message.answer(f[1])
 
 
 @shop_router.message(F.text == "КИСТЬ")
 async def show_kist(message: types.Message):
-    await message.answer(get_product()[1][1])
+    kisty = get_product_by_category(2)
+    kb = ReplyKeyboardRemove()
+    await message.answer("Список кисть:", reply_markup=kb)
+    for y in kisty:
+        await message.answer(y[1])
 
 
 @shop_router.message(F.text == "КАРТИНКА")
 async def show_kartina(message: types.Message):
-    await message.answer(get_product()[2][1])
+    kartink = get_product_by_category(3)
+    kb = ReplyKeyboardRemove()
+    await message.answer("Список картин:", reply_markup=kb)
+    for o in kartink:
+        await message.answer(o[1])
