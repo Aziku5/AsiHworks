@@ -7,6 +7,8 @@ from aiogram.types import (Message,
                            )
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton as IButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 
 dialogue_FSM_router = Router()
 
@@ -15,24 +17,29 @@ class UserData(StatesGroup):
     name = State()
     age = State()
     gender = State()
+    sex = State()
+    old = State()
 
 
 @dialogue_FSM_router.message(F.text == 'Отмена')
 @dialogue_FSM_router.message(Command("cancel"))
 async def cancel_dialogue_FSM(message: Message, state: FSMContext):
-    await state.finish()
-    await message.answer(text="Диалог окончен.", reply_markup=ReplyKeyboardRemove())
+    await state.clear()
+    await message.answer("Диалог окончен", reply_markup=ReplyKeyboardRemove())
 
 
 @dialogue_FSM_router.message(Command("ask"))
 async def start_dialogue_FSM(message: Message, state: FSMContext):
     await state.set_state(UserData.name)
-    await message.answer("Добро пожаловать! Заполните анкету.")
-    await message.answer("Как тебя зовут?")
+    kb = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Отмена")]])
+    await message.answer(
+        "Для того чтобы задать вопрос, введите свои данные. Если хотите прекратить, нажмите кнопку 'Отмена'"
+    )
+    await message.answer("Введите ваше имя", reply_markup=kb)
 
 
 @dialogue_FSM_router.message(F.text, UserData.name)
-async def process_name(message: Message, state: FSMContext):
+async def procces_sex(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(UserData.age)
     await message.answer("Сколько тебе лет?")
@@ -41,16 +48,14 @@ async def process_name(message: Message, state: FSMContext):
 @dialogue_FSM_router.message(F.text.isdigit, UserData.age)
 async def process_age(message: Message, state: FSMContext):
     age = int(message.text)
-    if age < 0 or age > 100:
-        await message.answer("Пожалуйста, введите реальный возраст.")
-        return
-    await state.update_data(age=age)
-    await state.set_state(UserData.gender)
-    kb = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="Муж"), KeyboardButton(text="Жен")]
-        ],
-        resize_keyboard=True
+    await state.set_state(UserData.sex)
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                IButton(text="Жен", callback_data="F"),
+                IButton(text="Муж", callback_data="M"),
+            ],
+        ]
     )
     await message.answer("Какой у тебя пол?", reply_markup=kb)
 
