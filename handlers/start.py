@@ -4,6 +4,8 @@ from aiogram.types.inline_keyboard_button import InlineKeyboardButton as IButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 from texts import START_TEXT
 from texts2 import BUTTON_TEXT
+from db import queries
+
 
 start_router = Router()
 
@@ -13,6 +15,7 @@ async def hello(message: types.Message):
     kb = InlineKeyboardMarkup(
         inline_keyboard=[
             [
+                IButton(text="подписаться", callback_data="Sub"),
                 IButton(text="Контакты", callback_data="contacts"),
                 IButton(text="О нас", callback_data="about"),
                 IButton(text="Наш сайт", url="https://google.com"),
@@ -34,3 +37,7 @@ async def about(callback: types.CallbackQuery):
     await callback.answer()
 
     await callback.message.answer("911")
+
+    @start_router.callback_query(F.data == "Sub")
+    async def sub(callback: types.CallbackQuery):
+        queries.subscrebu(callback.from_user.id)

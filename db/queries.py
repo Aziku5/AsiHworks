@@ -83,6 +83,15 @@ def get_product_by_category(category_id):
     return cursor.fetchall()
 
 
+def select_sub():
+    cursor.execute('''SELECT ID FROM subscrebu''')
+    users = cursor.fetchall()
+    users_id = [user for user in users]
+    return users_id
+    return [user for user in cursor.fetchall()]
+
+
+
 if __name__ == "__main__":
     init_db()
     create_tables()
