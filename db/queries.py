@@ -8,6 +8,40 @@ def init_db():
     cursor = db.cursor()
 
 
+def create_table():
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS cars (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            price INTEGER
+        )
+        """)
+    print('bd  запущена')
+
+
+def save_cars(title, price):
+    cursor.execute(
+        """
+        INSERT INTO cars (title, price)
+        VALUES (:t, :p)
+
+        """,
+        {
+            "t": title,
+            "p": price
+        },
+    )
+
+
+def select_cars():
+    cursor.execute(
+        """
+        SELECT * FROM cars
+        """)
+    return cursor.fetchall()
+
+
 def create_tables():
     cursor.execute(
         """

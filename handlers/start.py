@@ -24,6 +24,11 @@ async def hello(message: types.Message):
     )
     await message.answer(START_TEXT, reply_markup=kb)
 
+    @start_router.message(Command('cars'))
+    async def hello(message: types.Message):
+        for i in queries.select_cars():
+            await message.answer(f"{i[1], i[2]}")
+
 
 @start_router.callback_query(F.data == "ABOUT_US")
 async def about(callback: types.CallbackQuery):
